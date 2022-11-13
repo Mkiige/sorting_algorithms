@@ -1,61 +1,56 @@
 #include "sort.h"
-
 /**
- * len_list - returns the length of a linked list
- * @h: pointer to the list
- *
- * Return: length of list
+ * swap - swap 2 element in an list
+ * @head: head of list
+ * @a: node
+ * @b: node
  */
-int len_list(listint_t *h)
+void swap(listint_t *a, listint_t *b, listint_t **head)
 {
-	int len = 0;
+	listint_t *aux1 = NULL, *aux2 = NULL;
 
-	while (h)
-	{
-		len++;
-		h = h->next;
-	}
-	return (len);
+	if (a == NULL || b == NULL)
+		return;
+	aux1 = a->prev;
+	aux2 = b->next;
+	/* if nodes are adjacent*/
+	if (aux1)
+		aux1->next = b;
+	if (aux2)
+		aux2->prev = a;
+	a->next = aux2;
+	a->prev = b;
+	b->next = a;
+	b->prev = aux1;
+	if (aux1 == NULL)
+		*head = b;
 }
-
 /**
- * insertion_sort_list - sorts a linked list with the Insert Sort algorithm
- * @list: double pointer to the list to sort
+ * insertion_sort_list  - insertion_sort_list
+ * @list: doubly liked list
+ *
  */
 void insertion_sort_list(listint_t **list)
 {
-	listint_t *curr = NULL, *one = NULL;
-	listint_t *two = NULL, *three = NULL, *four = NULL;
+	listint_t *head, *prev;
+	int value;
 
-	if (!list || !(*list) || len_list(*list) < 2)
-		return;
-
-	curr = *list;
-
-	while (curr)
+	if (list == NULL || (*list)->next == NULL || (*list) == NULL)
 	{
-		if (curr->prev && curr->n < curr->prev->n)
-		{
-			one = curr->prev->prev;
-			two = curr->prev;
-			three = curr;
-			four = curr->next;
+		return;
+	}
+	head = *list;
+	while (head)
+	{
+		prev = head->prev;
+				value = head->n;
 
-			two->next = four;
-			if (four)
-				four->prev = two;
-			three->next = two;
-			three->prev = one;
-			if (one)
-				one->next = three;
-			else
-				*list = three;
-			two->prev = three;
-			curr = *list;
+		while (prev && prev->n > value)
+		{
+			swap(prev, head, list);
 			print_list(*list);
-			continue;
+			prev = head->prev;
 		}
-		else
-			curr = curr->next;
+		head = head->next;
 	}
 }
